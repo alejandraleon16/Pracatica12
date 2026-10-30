@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <!-- Titulo que aparece en la pestana del navegador -->
+        <title>Practica 12</title>
+    </head>
+    <body>
+        <!-- Titulo principal de la pagina, centrado -->
+        <h2 style="text-align:center">Calculo de sueldo quincenal</h2>
+
+        <!-- FORMULARIO: aqui se capturan los datos del trabajador.
+             onsubmit llama a la funcion calcular() al presionar el boton.
+             "return false" evita que la pagina se recargue al enviar. -->
+        <form onsubmit="calcular(); return false;" style="text-align:center; margin-bottom:20px">
+            <!-- Campo de texto para el nombre -->
+            <label>Nombre:</label>
+            <input type="text" name="nombre_completo" id="input_nombre">
+            <br><br>
+
+            <!-- Campo numerico para los dias trabajados -->
+            <label>Dias trabajados:</label>
+            <input type="number" name="dias_trabajados" id="input_dias">
+            <br><br>
+
+            <!-- Campo numerico para los años de antiguedad -->
+            <label>Antiguedad (años):</label>
+            <input type="number" name="antiguedad" id="input_antiguedad">
+            <br><br>
+
+            <!-- Boton que envia el formulario y ejecuta el calculo -->
+            <button type="submit">Calcular</button>
+        </form>
+
+        <!-- Aqui se dibuja la tabla con los resultados (la llena JavaScript) -->
+        <div id="resultado"></div>
+
+        <script>
+        // ---------- DATOS FIJOS ----------
+        let bono = 1200;   // Bono que se paga si la antiguedad es de 10 años o mas
+        let sq = 15000;    // Sueldo quincenal base
+
+        // ---------- FUNCION PARA DIBUJAR LA TABLA ----------
+        // Recibe los datos del trabajador. Si no recibe nada (al abrir la
+        // pagina), la tabla sale vacia.
+        function dibujarTabla(nombre, dt, antiguedad, sueldo, bonoGanado, total) {
+            // Se arma la tabla como texto y se va acumulando en la variable html
+            let html = "<table border='1' cellpadding='8' style='border-collapse:collapse; text-align:center; margin:auto; width:700px'>";
+
+            // Fila de encabezados
+            html += "<tr>";
+            html += "<th>#</th>";
+            html += "<th>Nombre</th>";
+            html += "<th>Dias trabajados</th>";
+            html += "<th>Antiguedad</th>";
+            html += "<th>Sueldo</th>";
+            html += "<th>Bono</th>";
+            html += "<th>Total</th>";
+            html += "</tr>";
+
+            // Ciclo for: crea 4 filas numeradas del 1 al 4
+            for (let a = 1; a <= 4; a++) {
+                html += "<tr>";
+                html += "<td>" + a + "</td>";   // Numero de fila
+
+                // Solo la fila 1 lleva los datos del trabajador,
+                // y solo si ya se capturaron (nombre no esta undefined)
+                if (a == 1 && nombre !== undefined) {
+                    html += "<td>" + nombre + "</td>";
+                    html += "<td>" + dt + "</td>";
+                    html += "<td>" + antiguedad + " años</td>";
+                    html += "<td>$" + sueldo + "</td>";
+                    html += "<td>$" + bonoGanado + "</td>";
+                    html += "<td>$" + total + "</td>";
+                } else {
+                    // Las demas filas quedan con celdas vacias
+                    html += "<td></td><td></td><td></td><td></td><td></td><td></td>";
+                }
+
+                html += "</tr>";
+            }
+
+            html += "</table>";
+
+            // Se coloca la tabla dentro del div con id "resultado"
+            document.getElementById("resultado").innerHTML = html;
+        }
+
+        // ---------- FUNCION QUE HACE EL CALCULO ----------
+        // Se ejecuta cuando se presiona el boton Calcular
+        function calcular() {
+            // Captura de datos desde el formulario (se lee el valor de cada input por su id)
+            let nombre = document.getElementById("input_nombre").value;
+            // Number() convierte el texto del input a numero para poder calcular
+            let dt = Number(document.getElementById("input_dias").value);
+            let antiguedad = Number(document.getElementById("input_antiguedad").value);
+
+            // Sueldo = (sueldo quincenal / 15 dias) * dias trabajados
+            let sueldo = (sq / 15) * dt;
+
+            // El bono empieza en 0 y solo se paga con 10 años o mas
+            let bonoGanado = 0;
+            if (antiguedad >= 10) {
+                bonoGanado = bono;
+            }
+
+            // Total a pagar = sueldo + bono
+            let total = sueldo + bonoGanado;
+
+            // Se manda todo a la funcion que dibuja la tabla
+            dibujarTabla(nombre, dt, antiguedad, sueldo, bonoGanado, total);
+        }
+
+        // ---------- AL ABRIR LA PAGINA ----------
+        // Se dibuja la tabla vacia para que ya aparezca armada
+        dibujarTabla();
+        </script>
+    </body>
+</html>
